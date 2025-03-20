@@ -60,3 +60,15 @@ func (f *Docx) WithA4Page() *Docx {
 	f.Document.Body.Items = append(f.Document.Body.Items, sectpr)
 	return f
 }
+
+func (f *Docx) WithA4WithPgBorders() *Docx {
+	sectpr := &SectPr{
+		PgSz: &PgSz{
+			W: 11906,
+			H: 16838,
+		},
+		PgBorders: CreateBlackPageBorders(),
+	}
+	f.Document.Body.Items = append(f.Document.Body.Items, sectpr)
+	return f
+}

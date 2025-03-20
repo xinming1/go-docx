@@ -26,11 +26,47 @@ import (
 
 // SectPr show the properties of the document, like paper size
 type SectPr struct {
-	XMLName xml.Name `xml:"w:sectPr,omitempty"` // properties of the document, including paper size
-	PgSz    *PgSz    `xml:"w:pgSz,omitempty"`
-	PgMar   *PgMar   `xml:"w:pgMar,omitempty"`
-	Cols    *Cols    `xml:"w:cols,omitempty"`
-	DocGrid *DocGrid `xml:"w:docGrid,omitempty"`
+	XMLName   xml.Name   `xml:"w:sectPr,omitempty"` // properties of the document, including paper size
+	PgSz      *PgSz      `xml:"w:pgSz,omitempty"`
+	PgMar     *PgMar     `xml:"w:pgMar,omitempty"`
+	PgBorders *PgBorders `xml:"w:pgBorders,omitempty"`
+	Cols      *Cols      `xml:"w:cols,omitempty"`
+	DocGrid   *DocGrid   `xml:"w:docGrid,omitempty"`
+}
+
+// PgBorders show the page border
+type PgBorders struct {
+	XMLName    xml.Name    `xml:"w:pgBorders"`
+	OffsetFrom string      `xml:"w:offsetFrom,attr,omitempty"` // 对应 w:offsetFrom="page"
+	Top        *BorderLine `xml:"w:top"`
+	Left       *BorderLine `xml:"w:left"`
+	Bottom     *BorderLine `xml:"w:bottom"`
+	Right      *BorderLine `xml:"w:right"`
+}
+
+type BorderLine struct {
+	XMLName xml.Name `xml:""`             // 动态设置标签名（由父结构决定） Dynamically set tag names (determined by the parent structure)
+	Val     string   `xml:"w:val,attr"`   // 边框类型（single/double等）Border type (single/double, etc.)
+	Sz      string   `xml:"w:sz,attr"`    // 边框粗细（8=0.5pt，48=3pt）Border thickness (8=0.5pt, 48=3pt)
+	Space   string   `xml:"w:space,attr"` // 边框与内容的间距 The spacing between the border and the content
+	Color   string   `xml:"w:color,attr"` // 颜色值（十六进制或 auto）Color value (hexadecimal or auto)
+}
+
+func CreateBlackPageBorders() *PgBorders {
+	borderLine := &BorderLine{
+		Val:   "single",
+		Sz:    "4",      // 对应 0.25pt
+		Space: "24",     // 间距 24/8=3pt
+		Color: "000000", // 黑色（注意不是 auto）
+	}
+
+	return &PgBorders{
+		OffsetFrom: "page",
+		Top:        borderLine,
+		Left:       borderLine,
+		Bottom:     borderLine,
+		Right:      borderLine,
+	}
 }
 
 // PgSz show the paper size
